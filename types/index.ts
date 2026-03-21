@@ -1,9 +1,11 @@
+export type UserRole = "user" | "admin";
+
 export type User = {
   _id: string;
   name: string;
   tel: string;
   email: string;
-  role: "user" | "admin";
+  role: UserRole;
 };
 
 export type Car = {
@@ -16,14 +18,17 @@ export type Car = {
   ratingCount?: number;
 };
 
+export type BookingStatus = "renting" | "returned" | string;
+
 export type Booking = {
   _id: string;
   startRent: string;
   endRent: string;
   totalPrice: number;
-  status: "renting" | "returned";
+  status: BookingStatus;
   car: Car;
-  user?: string;
+  user?: string | User;
+  createdAt?: string;
 };
 
 export type Rating = {
@@ -34,6 +39,5 @@ export type Rating = {
     _id?: string;
     name?: string;
   };
-  car?: string;
   createdAt?: string;
 };

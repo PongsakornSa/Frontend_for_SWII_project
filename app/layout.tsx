@@ -1,18 +1,21 @@
 import "./globals.css";
-import NavBar from "@/components/NavBar";
 import type { Metadata } from "next";
+import NavBar from "@/components/NavBar";
+import { AuthProvider } from "@/context/AuthContext";
 
 export const metadata: Metadata = {
   title: "Car Rental Frontend",
-  description: "Frontend for the provided backend"
+  description: "Frontend matching the uploaded backend"
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
       <body>
-        <NavBar />
-        <main className="container page">{children}</main>
+        <AuthProvider>
+          <NavBar />
+          <main className="container page">{children}</main>
+        </AuthProvider>
       </body>
     </html>
   );

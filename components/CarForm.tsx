@@ -17,14 +17,22 @@ export default function CarForm({ initialValue, mode, carId }: Props) {
   const [pricePerHour, setPricePerHour] = useState(String(initialValue?.pricePerHour || ""));
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   async function onSubmit(e: FormEvent) {
     e.preventDefault();
+    setLoading(true);
     setMessage("");
     setError("");
 
     try {
-      const payload = { name, address, tel, pricePerHour: Number(pricePerHour) };
+      const payload = {
+        name,
+        address,
+        tel,
+        pricePerHour: Number(pricePerHour)
+      };
+
       if (mode === "create") {
         await apiFetch("/car", {
           method: "POST",
@@ -42,13 +50,18 @@ export default function CarForm({ initialValue, mode, carId }: Props) {
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Save failed");
+    } finally {
+      setLoading(false);
     }
   }
 
   async function onDelete() {
     if (!carId) return;
     try {
-      await apiFetch(`/car/${carId}`, { method: "DELETE", auth: true });
+      await apiFetch(`/car/${carId}`, {
+        method: "DELETE",
+        auth: true
+      });
       window.location.href = "/cars";
     } catch (err) {
       setError(err instanceof Error ? err.message : "Delete failed");
@@ -56,21 +69,26 @@ export default function CarForm({ initialValue, mode, carId }: Props) {
   }
 
   return (
-    <div className="card" style={{ maxWidth: 700 }}>
+    <div className="card" style={{ maxWidth: 720 }}>
       <h2>{mode === "create" ? "Create new car" : "Edit car"}</h2>
       <form onSubmit={onSubmit}>
         <label className="label">Name</label>
         <input className="input" value={name} onChange={(e) => setName(e.target.value)} required />
+
         <label className="label">Address</label>
         <textarea className="textarea" value={address} onChange={(e) => setAddress(e.target.value)} required />
+
         <label className="label">Telephone</label>
         <input className="input" value={tel} onChange={(e) => setTel(e.target.value)} required />
+
         <label className="label">Price per hour</label>
         <input className="input" type="number" min="0" value={pricePerHour} onChange={(e) => setPricePerHour(e.target.value)} required />
-        <div className="row" style={{ marginTop: 16 }}>
-          <button className="btn btn-primary" type="submit">Save</button>
+
+        <div className="booking-actions">
+          <button className="btn btn-primary" type="submit" disabled={loading}>{loading ? "Saving..." : "Save"}</button>
           {mode === "edit" && <button className="btn btn-danger" type="button" onClick={onDelete}>Delete</button>}
         </div>
+
         {message && <p className="success">{message}</p>}
         {error && <p className="error">{error}</p>}
       </form>

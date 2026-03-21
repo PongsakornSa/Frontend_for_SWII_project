@@ -12,5 +12,6 @@ export function getToken() {
 }
 
 export function clearToken() {
+  if (typeof window === "undefined") return;
   localStorage.removeItem(TOKEN_KEY);
 }

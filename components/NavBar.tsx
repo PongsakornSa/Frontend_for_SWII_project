@@ -1,31 +1,29 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
-import { clearToken, getToken } from "@/lib/auth";
+import { useAuth } from "@/context/AuthContext";
 
 export default function NavBar() {
-  const [hasToken, setHasToken] = useState(false);
-
-  useEffect(() => {
-    setHasToken(!!getToken());
-  }, []);
-
-  function logout() {
-    clearToken();
-    window.location.href = "/login";
-  }
+  const { isLoggedIn, isAdmin, loading, logout, user } = useAuth();
 
   return (
     <header className="nav">
       <div className="container nav-inner">
-        <Link href="/" style={{ fontWeight: 800 }}>Car Rental</Link>
+        <Link href="/" className="nav-brand">Car Rental</Link>
+
         <nav className="nav-links">
           <Link href="/cars">Cars</Link>
-          <Link href="/bookings">My Bookings</Link>
-          <Link href="/admin/cars/new">Add Car</Link>
-          {hasToken ? (
-            <button className="btn btn-secondary" onClick={logout}>Logout</button>
+          {isLoggedIn && <Link href="/bookings">My Bookings</Link>}
+          {isAdmin && <Link href="/admin/bookings">Manage Bookings</Link>}
+          {isAdmin && <Link href="/admin/cars/new">Add Car</Link>}
+
+          {loading ? null : isLoggedIn ? (
+            <>
+              <span className="small muted" style={{ color: "#d1d5db" }}>
+                {user?.name} ({user?.role})
+              </span>
+              <button className="btn btn-secondary" onClick={logout}>Logout</button>
+            </>
           ) : (
             <>
               <Link href="/login">Login</Link>
