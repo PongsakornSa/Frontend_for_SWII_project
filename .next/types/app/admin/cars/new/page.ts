@@ -1,4 +1,4 @@
-// File: C:\Users\ASUS E1504f\OneDrive\Desktop\SW2\frontend-car-rental\app\admin\cars\new\page.tsx
+// File: C:\Users\ASUS E1504f\OneDrive\Desktop\SW2\fe-project-68-mongkonkit\app\admin\cars\new\page.tsx
 import * as entry from '../../../../../../app/admin/cars/new/page.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 
