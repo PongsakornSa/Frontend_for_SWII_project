@@ -25,10 +25,9 @@ export type Booking = {
   startRent: string;
   endRent: string;
   totalPrice: number;
-  status: BookingStatus;
+  status: "renting" | "returned";
   car: Car;
-  user?: string | User;
-  createdAt?: string;
+  user?: string | User; 
 };
 
 export type Rating = {

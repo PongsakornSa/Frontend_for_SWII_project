@@ -26,7 +26,7 @@ export default function AdminBookingsPage() {
     try {
       await apiFetch(`/bookings/${id}`, {
         method: "DELETE",
-        auth: true
+        auth: true,
       });
       await loadBookings();
     } catch (err) {
@@ -51,7 +51,15 @@ export default function AdminBookingsPage() {
       ) : (
         <div className="booking-block">
           {bookings.map((booking) => {
-            const bookingUser = typeof booking.user === "object" ? (booking.user as User) : null;
+            const bookingUser =
+              typeof booking.user === "object" && booking.user !== null
+                ? (booking.user as User)
+                : null;
+
+            const bookingUserName =
+              bookingUser?.name ||
+              (typeof booking.user === "string" ? booking.user : "-");
+
             return (
               <div key={booking._id} className="card">
                 <div className="space-between">
@@ -59,16 +67,25 @@ export default function AdminBookingsPage() {
                   <span className="badge badge-dark">{booking.status}</span>
                 </div>
 
-                <p>User: {bookingUser?.name || booking.user || "-"}</p>
+                <p>User: {bookingUserName}</p>
                 <p>Start: {new Date(booking.startRent).toLocaleString()}</p>
                 <p>End: {new Date(booking.endRent).toLocaleString()}</p>
                 <p>Total Price: ฿{booking.totalPrice}</p>
 
                 <div className="booking-actions">
-                  <button className="btn btn-secondary" onClick={() => setEditingId(editingId === booking._id ? null : booking._id)}>
+                  <button
+                    className="btn btn-secondary"
+                    onClick={() =>
+                      setEditingId(editingId === booking._id ? null : booking._id)
+                    }
+                  >
                     {editingId === booking._id ? "Close edit" : "Edit booking"}
                   </button>
-                  <button className="btn btn-danger" onClick={() => deleteBooking(booking._id)}>
+
+                  <button
+                    className="btn btn-danger"
+                    onClick={() => deleteBooking(booking._id)}
+                  >
                     Delete booking
                   </button>
                 </div>

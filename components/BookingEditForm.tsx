@@ -16,16 +16,24 @@ function toInputDate(value: string) {
   return new Date(date.getTime() - tzOffset).toISOString().slice(0, 16);
 }
 
-export default function BookingEditForm({ booking, onSaved, allowStatusEdit = false }: Props) {
+export default function BookingEditForm({
+  booking,
+  onSaved,
+  allowStatusEdit = false,
+}: Props) {
   const [startRent, setStartRent] = useState(toInputDate(booking.startRent));
   const [endRent, setEndRent] = useState(toInputDate(booking.endRent));
-  const [status, setStatus] = useState(booking.status || "renting");
+  const [status, setStatus] = useState<"renting" | "returned">(
+    booking.status || "renting"
+  );
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
 
   const estimated = useMemo(() => {
-    const hours = (new Date(endRent).getTime() - new Date(startRent).getTime()) / (1000 * 60 * 60);
+    const hours =
+      (new Date(endRent).getTime() - new Date(startRent).getTime()) /
+      (1000 * 60 * 60);
     if (hours <= 0) return 0;
     return hours * (booking.car?.pricePerHour || 0);
   }, [startRent, endRent, booking.car]);
@@ -40,7 +48,7 @@ export default function BookingEditForm({ booking, onSaved, allowStatusEdit = fa
       const payload: Record<string, unknown> = {
         startRent,
         endRent,
-        totalPrice: estimated
+        totalPrice: estimated,
       };
 
       if (allowStatusEdit) {
@@ -50,8 +58,9 @@ export default function BookingEditForm({ booking, onSaved, allowStatusEdit = fa
       await apiFetch(`/bookings/${booking._id}`, {
         method: "PUT",
         auth: true,
-        body: JSON.stringify(payload)
+        body: JSON.stringify(payload),
       });
+
       setMessage("Booking updated successfully");
       onSaved();
     } catch (err) {
@@ -66,22 +75,42 @@ export default function BookingEditForm({ booking, onSaved, allowStatusEdit = fa
       <h4 style={{ marginTop: 0 }}>Edit booking</h4>
 
       <label className="label">Start rent</label>
-      <input className="input" type="datetime-local" value={startRent} onChange={(e) => setStartRent(e.target.value)} required />
+      <input
+        className="input"
+        type="datetime-local"
+        value={startRent}
+        onChange={(e) => setStartRent(e.target.value)}
+        required
+      />
 
       <label className="label">End rent</label>
-      <input className="input" type="datetime-local" value={endRent} onChange={(e) => setEndRent(e.target.value)} required />
+      <input
+        className="input"
+        type="datetime-local"
+        value={endRent}
+        onChange={(e) => setEndRent(e.target.value)}
+        required
+      />
 
       {allowStatusEdit && (
         <>
           <label className="label">Status</label>
-          <select className="select" value={status} onChange={(e) => setStatus(e.target.value)}>
+          <select
+            className="select"
+            value={status}
+            onChange={(e) =>
+              setStatus(e.target.value as "renting" | "returned")
+            }
+          >
             <option value="renting">renting</option>
             <option value="returned">returned</option>
           </select>
         </>
       )}
 
-      <p>Estimated total: <strong>฿{estimated.toFixed(2)}</strong></p>
+      <p>
+        Estimated total: <strong>฿{estimated.toFixed(2)}</strong>
+      </p>
 
       <button className="btn btn-primary" disabled={loading}>
         {loading ? "Saving..." : "Save changes"}
