@@ -18,9 +18,11 @@ export default function CarsPage() {
     try {
       setLoading(true);
       setError("");
+
       const params = new URLSearchParams();
       if (startRent) params.set("startRent", startRent);
       if (endRent) params.set("endRent", endRent);
+
       const query = params.toString() ? `?${params.toString()}` : "";
       const res = await apiFetch<Car[]>(`/car${query}`);
       setCars(res.data || []);
@@ -39,21 +41,35 @@ export default function CarsPage() {
     <div>
       <h1 className="section-title">Cars</h1>
 
-      <div className="card" style={{ marginBottom: 18 }}>
+      <div className="card" style={{ marginBottom: 20 }}>
         <h3 style={{ marginTop: 0 }}>Check available cars</h3>
+
         <div className="row">
           <div style={{ flex: 1, minWidth: 220 }}>
             <label className="label">Start rent</label>
-            <input className="input" type="datetime-local" value={startRent} onChange={(e) => setStartRent(e.target.value)} />
+            <input
+              className="input"
+              type="datetime-local"
+              value={startRent}
+              onChange={(e) => setStartRent(e.target.value)}
+            />
           </div>
+
           <div style={{ flex: 1, minWidth: 220 }}>
             <label className="label">End rent</label>
-            <input className="input" type="datetime-local" value={endRent} onChange={(e) => setEndRent(e.target.value)} />
+            <input
+              className="input"
+              type="datetime-local"
+              value={endRent}
+              onChange={(e) => setEndRent(e.target.value)}
+            />
           </div>
         </div>
 
         <div className="booking-actions">
-          <button className="btn btn-primary" onClick={loadCars}>Search</button>
+          <button className="btn btn-primary" onClick={loadCars}>
+            Search
+          </button>
           <button
             className="btn btn-secondary"
             onClick={() => {
