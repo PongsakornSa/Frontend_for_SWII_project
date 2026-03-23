@@ -6,6 +6,7 @@ import { apiFetch } from "@/lib/api";
 import { Car } from "@/types";
 import BookingCreateForm from "@/components/BookingCreateForm";
 import RatingSection from "@/components/RatingSection";
+import Image from "next/image";
 import { useAuth } from "@/context/AuthContext";
 
 export default function CarDetailPage({ params }: { params: Promise<{ id: string }> }) {
@@ -32,6 +33,14 @@ export default function CarDetailPage({ params }: { params: Promise<{ id: string
   return (
     <div className="grid" style={{ gridTemplateColumns: "1.15fr .85fr" }}>
       <div className="card">
+        <div style={{ position: "relative", width: "100%", height: "300px", marginBottom: "20px" }}>
+          <Image 
+            src={`/${car.name}.png`} 
+            alt={car.name}
+            fill
+            style={{ objectFit: "cover", borderRadius: "8px" }}
+          />
+        </div>
         <div className="space-between">
           <h1 style={{ margin: 0 }}>{car.name}</h1>
           <span className="badge">฿{car.pricePerHour}/hour</span>
